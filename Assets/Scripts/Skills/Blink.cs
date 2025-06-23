@@ -15,12 +15,26 @@ public class Blink : MonoBehaviour {
         UpdateBlinkIcon();
         UpdateBlinkTimerText();
     }
+
+    private bool ManagePlayerPos() {
+        if (player.transform.position.x <= 0.96 ||
+            player.transform.position.x >= 51 ||
+            player.transform.position.y >= -12.60 ||
+            player.transform.position.y <= -45) {
+            player.transform.position = new Vector2(25f, -31.65f);
+            return true;
+        } 
+        return false;
+    }
     
     private void CastBlink() {
         float blinkDistance = PlayerStatsManager.Instance.facingDirection * PlayerStatsManager.Instance.blinkDistance;
         if (Input.GetKeyDown(KeyBinds.Blink) && _blinkTimer <= 0) {
-            player.transform.position = new Vector2(player.transform.position.x + blinkDistance, player.transform.position.y);
-            _blinkTimer = PlayerCooldown.Blink;
+            if (ManagePlayerPos())  _blinkTimer = PlayerCooldown.Blink * 2;
+            else {
+                player.transform.position = new Vector2(player.transform.position.x + blinkDistance, player.transform.position.y);
+                _blinkTimer = PlayerCooldown.Blink;
+            }
         }
     }
 
